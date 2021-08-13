@@ -1,0 +1,45 @@
+nav {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.startBtn {
+  width: 70px;
+  height: 70px;
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: blanchedalmond;
+  margin-top: 20px;
+}
+.startBtn:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+.startBtn i {
+  font-size: 30px;
+}
+.timeLeft {
+  margin-top: 20px;
+  display: flex;
+  width: 130px;
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  font-size: 25px;
+  border-radius: 7px;
+  background: #deba9d;
+}
+.carrotLeft {
+  margin-top: 20px;
+  border: 2px solid black;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  background-color: #6f4c5b;
+  color: white;
+}
