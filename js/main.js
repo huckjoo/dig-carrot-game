@@ -25,7 +25,15 @@ let sec=10;
 let timerId = null;
 let flag = 0;
 
-function newGame(){
+const musicBgm = document.querySelector(".bgm");
+const musicLose = document.querySelector(".game_lose");
+const musicWin = document.querySelector(".game_win");
+const musicBug = document.querySelector(".bug_pull");
+const musicCarrot = document.querySelector(".carrot_pull");
+
+function newGame(){    
+    musicBgm.play();
+    startBtn.classList.remove("invisible");
     if (flag === 0){
         timeLeft.textContent = "00:10";
         console.log("flag==0");
@@ -67,6 +75,8 @@ function newGame(){
 }
 
 function popReplay(){
+    musicBgm.pause();
+        startBtn.classList.add("invisible");
     const screen = document.createElement("div");
     screen.setAttribute("class","popup");
     screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>retry?</span>`
@@ -76,6 +86,9 @@ function popReplay(){
     retryBtn.addEventListener("click",newGame);
 }
 function popWin(){
+    musicBgm.pause();
+    musicWin.play();
+    startBtn.classList.add("invisible");
     const screen = document.createElement("div");
     screen.setAttribute("class","popup");
     screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU WIN😄</span>`
@@ -85,6 +98,9 @@ function popWin(){
     retryBtn.addEventListener("click",newGame);
 }
 function popLose(){
+    musicBgm.pause();
+    musicLose.play();
+    startBtn.classList.add("invisible");
     const screen = document.createElement("div");
     screen.setAttribute("class","popup");
     screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU LOSE🥴</span>`
@@ -95,6 +111,7 @@ function popLose(){
 }
 
 function bugOnClick(event){
+    musicBug.play();
     popLose();
     clearInterval(timerId);
 }
@@ -102,6 +119,7 @@ function bugOnClick(event){
 function carrotOnClick(event){
     const carrot = event.target;
     const carrotLeft = document.querySelector(".carrotLeft span");
+    musicCarrot.play();
     carrot.remove();
     const curCarrot = carrotLeft.textContent;
     carrotLeft.textContent = curCarrot-1
