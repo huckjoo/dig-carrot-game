@@ -1,3 +1,8 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .bug {
   position: fixed;
   width: 80px;

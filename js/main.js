@@ -14,11 +14,10 @@ function createImg(){
 
 function printTime(){
     const timeLeft = document.querySelector(".timeLeft span");
-    let time = timeLeft.textContent;
     sec=sec-1;
-    timeLeft.innerHTML = `00:0${sec}`;
+    timeLeft.innerHTML = sec<10 ? `00:0${sec}`:`00:${sec}`;
     if (sec===0){
-        console.log("you lose!");
+        popLose();
         clearInterval(timerId);
     }
 }
@@ -28,6 +27,13 @@ let flag = 0;
 
 function newGame(){
     if (flag === 0){
+        timeLeft.textContent = "00:10";
+        console.log("flag==0");
+        sec=10;
+        const popup = document.querySelector(".popup");
+        if (popup!==null){
+            popup.setAttribute("class","hidden");
+        }
         //아이콘 바꾸기
         startBtn.innerHTML = '<i class="fas fa-stop"></i>'
         flag++;
@@ -49,15 +55,47 @@ function newGame(){
         bugArr.forEach(bug=>randomPosition(bug));
         carrotArr.forEach(carrot=>carrot.addEventListener("click",carrotOnClick));
         bugArr.forEach(bug=>bug.addEventListener("click",bugOnClick));
-    }else{
-        console.log("replay?");
+    }else if (flag===1){
+        console.log("flag==1");
+        const popup = document.querySelector(".popup");
+        if (popup===null){
+            popReplay();
+        }
+        clearInterval(timerId);
+        flag=0;
     }
+}
 
-    
+function popReplay(){
+    const screen = document.createElement("div");
+    screen.setAttribute("class","popup");
+    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>retry?</span>`
+    main.appendChild(screen);
+    const retryBtn = document.querySelector(".retryBtn");
+    flag=0;
+    retryBtn.addEventListener("click",newGame);
+}
+function popWin(){
+    const screen = document.createElement("div");
+    screen.setAttribute("class","popup");
+    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU WIN😄</span>`
+    main.appendChild(screen);
+    const retryBtn = document.querySelector(".retryBtn");
+    flag=0;
+    retryBtn.addEventListener("click",newGame);
+}
+function popLose(){
+    const screen = document.createElement("div");
+    screen.setAttribute("class","popup");
+    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU LOSE🥴</span>`
+    main.appendChild(screen);
+    const retryBtn = document.querySelector(".retryBtn");
+    flag=0;
+    retryBtn.addEventListener("click",newGame);
 }
 
 function bugOnClick(event){
-    console.log("you lose");
+    popLose();
     clearInterval(timerId);
 }
 
@@ -68,7 +106,8 @@ function carrotOnClick(event){
     const curCarrot = carrotLeft.textContent;
     carrotLeft.textContent = curCarrot-1
     if(carrotLeft.textContent==="0"){
-        console.log("you win!")
+        popWin()
+        clearInterval(timerId);
     };
 }
 
