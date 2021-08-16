@@ -3,12 +3,32 @@
 const startBtn = document.querySelector(".startBtn");
 const main = document.querySelector("main");
 const timeLeft = document.querySelector(".timeLeft span");
-function createImg(){
-    for(let i=1;i<=10;i++){
-        main.innerHTML += `<img class="carrot" src="img/carrot${i}.png" />`
+const carrotLeft = document.querySelector(".carrotLeft span");
+
+const musicBgm = document.querySelector(".bgm");
+const musicLose = document.querySelector(".game_lose");
+const musicWin = document.querySelector(".game_win");
+const musicBug = document.querySelector(".bug_pull");
+const musicCarrot = document.querySelector(".carrot_pull");
+
+const GAME_NUM = 10;
+let CARROT = GAME_NUM;
+const BUG = GAME_NUM;
+let sec=GAME_NUM;
+let timerId = null;
+let firstStart = true;
+
+function createRandomImg(){
+    if (main.childNodes[0]){
+        while(main.childNodes[0]){
+            main.childNodes[0].remove();
+        }
     }
-    for(let i=1;i<=10;i++){
-        main.innerHTML += `<img class="bug" src="img/bug${i}.png" />`
+    for(let i=1;i<=CARROT;i++){
+        main.innerHTML += `<img class="carrot" src="img/carrot.png" />`
+    }
+    for(let i=1;i<=BUG;i++){
+        main.innerHTML += `<img class="bug" src="img/bug.png" />`
     }
 }
 
@@ -17,102 +37,76 @@ function printTime(){
     sec=sec-1;
     timeLeft.innerHTML = sec<10 ? `00:0${sec}`:`00:${sec}`;
     if (sec===0){
-        popLose();
+        popUpMessage("You lose🥴","lose");
         clearInterval(timerId);
     }
 }
-let sec=10;
-let timerId = null;
-let flag = 0;
 
-const musicBgm = document.querySelector(".bgm");
-const musicLose = document.querySelector(".game_lose");
-const musicWin = document.querySelector(".game_win");
-const musicBug = document.querySelector(".bug_pull");
-const musicCarrot = document.querySelector(".carrot_pull");
+function onClickBtn(event){
+    if (firstStart===true){
+        return;
+    }
+    if(event.target.classList.value === "carrot"){
+        carrotOnClick(event);
+    }else if(event.target.classList.value === "bug"){
+        bugOnClick();
+    }
+}
 
-function newGame(){    
-    musicBgm.play();
+function newGame(){
+    musicBgm.currentTime = 0;
+    const bgm = musicBgm.play();
     startBtn.classList.remove("invisible");
-    if (flag === 0){
-        timeLeft.textContent = "00:10";
-        console.log("flag==0");
-        sec=10;
-        const popup = document.querySelector(".popup");
-        if (popup!==null){
-            popup.setAttribute("class","hidden");
-        }
-        //아이콘 바꾸기
+    if (firstStart === true){
+        sec=GAME_NUM;
+        timeLeft.textContent = `00:${sec}`;
+        carrotLeft.textContent = CARROT;
         startBtn.innerHTML = '<i class="fas fa-stop"></i>'
-        flag++;
-        //10초 타임어택 시작
+        firstStart=false;
         timerId = setInterval(printTime,1000)
-
-        //당근,벌레 랜덤배치
-        if (main.childNodes[0]){
-            while(main.childNodes[0]){
-                main.childNodes[0].remove();
-            }
+        createRandomImg();
+        setRandomPosition();
+        
+    }else if (firstStart===false){
+        if (bgm!==undefined){
+            bgm.then(x=>{
+                restart();
+            })
         }
-        createImg();
-        const carrotArr = document.querySelectorAll(".carrot");
-        const bugArr = document.querySelectorAll(".bug");
-        const carrotLeft = document.querySelector(".carrotLeft span");
-        carrotLeft.innerHTML = 10;
-        carrotArr.forEach(carrot=>randomPosition(carrot));
-        bugArr.forEach(bug=>randomPosition(bug));
-        carrotArr.forEach(carrot=>carrot.addEventListener("click",carrotOnClick));
-        bugArr.forEach(bug=>bug.addEventListener("click",bugOnClick));
-    }else if (flag===1){
-        console.log("flag==1");
-        const popup = document.querySelector(".popup");
-        if (popup===null){
-            popReplay();
-        }
-        clearInterval(timerId);
-        flag=0;
     }
 }
 
-function popReplay(){
-    musicBgm.pause();
-        startBtn.classList.add("invisible");
-    const screen = document.createElement("div");
-    screen.setAttribute("class","popup");
-    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>retry?</span>`
-    main.appendChild(screen);
-    const retryBtn = document.querySelector(".retryBtn");
-    flag=0;
-    retryBtn.addEventListener("click",newGame);
+
+function restart(){
+    const popup = document.querySelector(".popup");
+    if (popup===null){
+        musicLose.play();
+        popUpMessage("Replay❔","replay");
+    }
+    clearInterval(timerId);
+    firstStart=true;
 }
-function popWin(){
+
+function popUpMessage(text,result){
     musicBgm.pause();
-    musicWin.play();
+    if(result==="win"){
+        musicWin.play();
+    }else if(result === "lose"){
+        musicLose.play();
+    }
     startBtn.classList.add("invisible");
     const screen = document.createElement("div");
     screen.setAttribute("class","popup");
-    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU WIN😄</span>`
+    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>${text}</span>`
     main.appendChild(screen);
     const retryBtn = document.querySelector(".retryBtn");
-    flag=0;
-    retryBtn.addEventListener("click",newGame);
-}
-function popLose(){
-    musicBgm.pause();
-    musicLose.play();
-    startBtn.classList.add("invisible");
-    const screen = document.createElement("div");
-    screen.setAttribute("class","popup");
-    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>YOU LOSE🥴</span>`
-    main.appendChild(screen);
-    const retryBtn = document.querySelector(".retryBtn");
-    flag=0;
+    firstStart=true;
     retryBtn.addEventListener("click",newGame);
 }
 
-function bugOnClick(event){
+function bugOnClick(){
     musicBug.play();
-    popLose();
+    popUpMessage("You lose🥴","lose");
     clearInterval(timerId);
 }
 
@@ -124,9 +118,18 @@ function carrotOnClick(event){
     const curCarrot = carrotLeft.textContent;
     carrotLeft.textContent = curCarrot-1
     if(carrotLeft.textContent==="0"){
-        popWin()
+        popUpMessage("You Win😄","win");
         clearInterval(timerId);
     };
+}
+
+function setRandomPosition(){
+    const carrotArr = document.querySelectorAll(".carrot");
+    const bugArr = document.querySelectorAll(".bug");
+    carrotArr.forEach(carrot=>randomPosition(carrot));
+    bugArr.forEach(bug=>randomPosition(bug));
+    // carrotArr.forEach(carrot=>carrot.addEventListener("click",carrotOnClick));
+    // bugArr.forEach(bug=>bug.addEventListener("click",bugOnClick));
 }
 
 function randomPosition(target){
@@ -142,4 +145,6 @@ function randomPosition(target){
 }
 
 startBtn.addEventListener("click",newGame);
-timeLeft.textContent = "00:10";
+timeLeft.textContent = `00:${sec}`;
+carrotLeft.textContent = `${CARROT}`;
+main.addEventListener("click",onClickBtn);
