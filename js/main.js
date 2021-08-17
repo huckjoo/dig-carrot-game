@@ -11,6 +11,7 @@ const musicWin = document.querySelector(".game_win");
 const musicBug = document.querySelector(".bug_pull");
 const musicCarrot = document.querySelector(".carrot_pull");
 
+const CARROT_SIZE = 95;
 const GAME_NUM = 10;
 let CARROT = GAME_NUM;
 const BUG = GAME_NUM;
@@ -128,20 +129,18 @@ function setRandomPosition(){
     const bugArr = document.querySelectorAll(".bug");
     carrotArr.forEach(carrot=>randomPosition(carrot));
     bugArr.forEach(bug=>randomPosition(bug));
-    // carrotArr.forEach(carrot=>carrot.addEventListener("click",carrotOnClick));
-    // bugArr.forEach(bug=>bug.addEventListener("click",bugOnClick));
 }
 
 function randomPosition(target){
-    while(true){
-        const x = Math.floor(Math.random()*600)+1;
-        const y = Math.floor(Math.random()*1450)+1;
-        if (x>=350 && y>=30){
-            target.style.top = `${x}px` //350~600사이
-            target.style.left = `${y}px` //30~1450사이
-            break;
-        }
-    }
+    const rect = main.getBoundingClientRect();
+    const xMax = rect.right;
+    const xMin = rect.left
+    const yMax = rect.bottom;
+    const yMin = rect.top;
+    const x = Math.floor(Math.random()*(xMax-xMin-CARROT_SIZE))+xMin;
+    const y = Math.floor(Math.random()*(yMax-yMin-CARROT_SIZE))+yMin;
+    target.style.top = `${y}px`;
+    target.style.left = `${x}px`;  
 }
 
 startBtn.addEventListener("click",newGame);

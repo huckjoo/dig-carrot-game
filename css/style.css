@@ -1,11 +1,18 @@
 @import url("nav.css");
 @import url("main.css");
 @import url("popup.css");
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
+* {
+  box-sizing: border-box;
+}
+.game__screen {
+  width: 900px;
+  height: 600px;
+  margin: auto;
+  background: url(../img/background.png) center/cover no-repeat;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+body {
+  background-color: black;
 }
