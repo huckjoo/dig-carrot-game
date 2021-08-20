@@ -19,20 +19,6 @@ let sec=GAME_NUM;
 let timerId = null;
 let firstStart = true;
 
-function createRandomImg(){
-    if (main.childNodes[0]){
-        while(main.childNodes[0]){
-            main.childNodes[0].remove();
-        }
-    }
-    for(let i=1;i<=CARROT;i++){
-        main.innerHTML += `<img class="carrot" src="img/carrot.png" />`
-    }
-    for(let i=1;i<=BUG;i++){
-        main.innerHTML += `<img class="bug" src="img/bug.png" />`
-    }
-}
-
 function printTime(){
     const timeLeft = document.querySelector(".timeLeft span");
     sec=sec-1;
@@ -133,14 +119,28 @@ function setRandomPosition(){
 
 function randomPosition(target){
     const rect = main.getBoundingClientRect();
-    const xMax = rect.right;
-    const xMin = rect.left
-    const yMax = rect.bottom;
-    const yMin = rect.top;
-    const x = Math.floor(Math.random()*(xMax-xMin-CARROT_SIZE))+xMin;
-    const y = Math.floor(Math.random()*(yMax-yMin-CARROT_SIZE))+yMin;
+    const x1 = 0;
+    const x2 = rect.width - CARROT_SIZE;
+    const y1 = 0;
+    const y2 = rect.height - CARROT_SIZE;
+    const x = Math.floor(Math.random()*(x2-x1))+x1;
+    const y = Math.floor(Math.random()*(y2-y1))+y1;
     target.style.top = `${y}px`;
     target.style.left = `${x}px`;  
+}
+
+function createRandomImg(){
+    if (main.childNodes[0]){
+        while(main.childNodes[0]){
+            main.childNodes[0].remove();
+        }
+    }
+    for(let i=1;i<=CARROT;i++){
+        main.innerHTML += `<img class="abs carrot" src="img/carrot.png" />`
+    }
+    for(let i=1;i<=BUG;i++){
+        main.innerHTML += `<img class="abs bug" src="img/bug.png" />`
+    }
 }
 
 startBtn.addEventListener("click",newGame);

@@ -6,6 +6,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .bug {
   position: fixed;
@@ -24,4 +25,7 @@ main {
 .carrot:hover {
   cursor: pointer;
   transform: scale(1.08);
+}
+.abs {
+  position: absolute;
 }
