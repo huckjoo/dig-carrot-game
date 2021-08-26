@@ -5,24 +5,26 @@ const main = document.querySelector("main");
 const timeLeft = document.querySelector(".timeLeft span");
 const carrotLeft = document.querySelector(".carrotLeft span");
 
-const musicBgm = document.querySelector(".bgm");
-const musicLose = document.querySelector(".game_lose");
-const musicWin = document.querySelector(".game_win");
-const musicBug = document.querySelector(".bug_pull");
-const musicCarrot = document.querySelector(".carrot_pull");
+const musicBgm = new Audio("./sound/bg.mp3");
+const musicLose = new Audio("./sound/alert.wav");
+const musicWin = new Audio("./sound/game_win.mp3");
+const musicBug = new Audio("./sound/bug_pull.mp3");
+const musicCarrot = new Audio("./sound/carrot_pull.mp3");
 
 const CARROT_SIZE = 95;
-const GAME_NUM = 10;
-let CARROT = GAME_NUM;
-const BUG = GAME_NUM;
-let sec=GAME_NUM;
+let CARROT = 10;
+const BUG = 10;
+let sec=10;
 let timerId = null;
 let firstStart = true;
 
-function printTime(){
+function timeText(){
     const timeLeft = document.querySelector(".timeLeft span");
     sec=sec-1;
     timeLeft.innerHTML = sec<10 ? `00:0${sec}`:`00:${sec}`;
+}
+function printTime(){
+    timeText();
     if (sec===0){
         popUpMessage("You lose🥴","lose");
         clearInterval(timerId);
@@ -30,12 +32,10 @@ function printTime(){
 }
 
 function onClickBtn(event){
-    if (firstStart===true){
-        return;
-    }
-    if(event.target.classList.value === "carrot"){
+    const target = event.target.classList;
+    if(target.contains("carrot")){
         carrotOnClick(event);
-    }else if(event.target.classList.value === "bug"){
+    }else if(target.contains("bug")){
         bugOnClick();
     }
 }
@@ -45,7 +45,7 @@ function newGame(){
     const bgm = musicBgm.play();
     startBtn.classList.remove("invisible");
     if (firstStart === true){
-        sec=GAME_NUM;
+        sec=10;
         timeLeft.textContent = `00:${sec}`;
         carrotLeft.textContent = CARROT;
         startBtn.innerHTML = '<i class="fas fa-stop"></i>'
@@ -62,7 +62,6 @@ function newGame(){
         }
     }
 }
-
 
 function restart(){
     const popup = document.querySelector(".popup");
@@ -82,15 +81,21 @@ function popUpMessage(text,result){
         musicLose.play();
     }
     startBtn.classList.add("invisible");
+    popUpText(text);
+    popUpRetry();
+    firstStart=true;
+}
+function popUpRetry(){
+    const retryBtn = document.querySelector(".retryBtn");
+    retryBtn.addEventListener("click",newGame);
+}
+
+function popUpText(text){
     const screen = document.createElement("div");
     screen.setAttribute("class","popup");
     screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>${text}</span>`
     main.appendChild(screen);
-    const retryBtn = document.querySelector(".retryBtn");
-    firstStart=true;
-    retryBtn.addEventListener("click",newGame);
 }
-
 function bugOnClick(){
     musicBug.play();
     popUpMessage("You lose🥴","lose");
@@ -102,12 +107,15 @@ function carrotOnClick(event){
     const carrotLeft = document.querySelector(".carrotLeft span");
     musicCarrot.play();
     carrot.remove();
-    const curCarrot = carrotLeft.textContent;
-    carrotLeft.textContent = curCarrot-1
+    carrotText();
     if(carrotLeft.textContent==="0"){
         popUpMessage("You Win😄","win");
         clearInterval(timerId);
     };
+}
+function carrotText(){
+    const curCarrot = carrotLeft.textContent;
+    carrotLeft.textContent = curCarrot-1
 }
 
 function setRandomPosition(){
@@ -128,13 +136,16 @@ function randomPosition(target){
     target.style.top = `${y}px`;
     target.style.left = `${x}px`;  
 }
-
-function createRandomImg(){
+function removeMain(){
     if (main.childNodes[0]){
         while(main.childNodes[0]){
             main.childNodes[0].remove();
         }
     }
+}
+
+function createRandomImg(){
+    removeMain();
     for(let i=1;i<=CARROT;i++){
         main.innerHTML += `<img class="abs carrot" src="img/carrot.png" />`
     }
