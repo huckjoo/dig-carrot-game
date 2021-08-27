@@ -1,5 +1,5 @@
 "use strict";
-
+import popUp from './popup.js';
 const startBtn = document.querySelector(".startBtn");
 const main = document.querySelector("main");
 const timeLeft = document.querySelector(".timeLeft span");
@@ -18,6 +18,8 @@ let sec=10;
 let timerId = null;
 let firstStart = true;
 
+const finishBanner = new popUp();
+
 function timeText(){
     const timeLeft = document.querySelector(".timeLeft span");
     sec=sec-1;
@@ -26,7 +28,7 @@ function timeText(){
 function printTime(){
     timeText();
     if (sec===0){
-        popUpMessage("You lose🥴","lose");
+        finishBanner.popUpScreen("you lose🥴");
         clearInterval(timerId);
     }
 }
@@ -39,6 +41,7 @@ function onClickBtn(event){
         bugOnClick();
     }
 }
+finishBanner.setEventListener(newGame);
 
 function newGame(){
     musicBgm.currentTime = 0;
@@ -57,48 +60,30 @@ function newGame(){
     }else if (firstStart===false){
         if (bgm!==undefined){
             bgm.then(x=>{
-                restart();
+                endGame("replay");
             })
         }
     }
 }
-
-function restart(){
-    const popup = document.querySelector(".popup");
-    if (popup===null){
-        musicLose.play();
-        popUpMessage("Replay❔","replay");
-    }
-    clearInterval(timerId);
-    firstStart=true;
-}
-
-function popUpMessage(text,result){
+function endGame(result){
     musicBgm.pause();
     if(result==="win"){
         musicWin.play();
+        finishBanner.popUpScreen("You win😄");
     }else if(result === "lose"){
         musicLose.play();
+        finishBanner.popUpScreen("you lose🥴");
+    }else if(result === "replay"){
+        finishBanner.popUpScreen("Replay❔")
     }
     startBtn.classList.add("invisible");
-    popUpText(text);
-    popUpRetry();
     firstStart=true;
-}
-function popUpRetry(){
-    const retryBtn = document.querySelector(".retryBtn");
-    retryBtn.addEventListener("click",newGame);
+    clearInterval(timerId);
 }
 
-function popUpText(text){
-    const screen = document.createElement("div");
-    screen.setAttribute("class","popup");
-    screen.innerHTML = `<button class="retryBtn"><i class="fas fa-redo-alt"></i></button><span>${text}</span>`
-    main.appendChild(screen);
-}
 function bugOnClick(){
     musicBug.play();
-    popUpMessage("You lose🥴","lose");
+    endGame("lose");
     clearInterval(timerId);
 }
 
@@ -109,7 +94,7 @@ function carrotOnClick(event){
     carrot.remove();
     carrotText();
     if(carrotLeft.textContent==="0"){
-        popUpMessage("You Win😄","win");
+        endGame("win");
         clearInterval(timerId);
     };
 }
