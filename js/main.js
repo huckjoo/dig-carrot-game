@@ -1,7 +1,8 @@
 "use strict";
 import popUp from './popup.js';
+import gamefield from './gamefield.js';
+
 const startBtn = document.querySelector(".startBtn");
-const main = document.querySelector("main");
 const timeLeft = document.querySelector(".timeLeft span");
 const carrotLeft = document.querySelector(".carrotLeft span");
 
@@ -11,14 +12,9 @@ const musicWin = new Audio("./sound/game_win.mp3");
 const musicBug = new Audio("./sound/bug_pull.mp3");
 const musicCarrot = new Audio("./sound/carrot_pull.mp3");
 
-const CARROT_SIZE = 95;
-let CARROT = 10;
-const BUG = 10;
 let sec=10;
 let timerId = null;
 let firstStart = true;
-
-const finishBanner = new popUp();
 
 function timeText(){
     const timeLeft = document.querySelector(".timeLeft span");
@@ -32,15 +28,27 @@ function printTime(){
         clearInterval(timerId);
     }
 }
+const finishBanner = new popUp();
 
-function onClickBtn(event){
-    const target = event.target.classList;
-    if(target.contains("carrot")){
-        carrotOnClick(event);
-    }else if(target.contains("bug")){
-        bugOnClick();
+const gameField = new gamefield(5,4,95);
+gameField.setClickListener(targetOnClick);
+
+function targetOnClick(event){
+    const target = event.target;
+    if(target.classList.contains("carrot")){
+        const carrotLeft = document.querySelector(".carrotLeft span");
+        musicCarrot.play();
+        target.remove();
+        carrotText();
+        if(carrotLeft.textContent==="0"){
+            endGame("win");
+        };
+    }else if(target.classList.contains('bug')){
+        musicBug.play();
+        endGame("lose");
     }
 }
+
 finishBanner.setEventListener(newGame);
 
 function newGame(){
@@ -50,13 +58,12 @@ function newGame(){
     if (firstStart === true){
         sec=10;
         timeLeft.textContent = `00:${sec}`;
-        carrotLeft.textContent = CARROT;
+        carrotLeft.textContent = gameField.carrotNum;
         startBtn.innerHTML = '<i class="fas fa-stop"></i>'
         firstStart=false;
         timerId = setInterval(printTime,1000)
-        createRandomImg();
-        setRandomPosition();
-        
+        gameField.createRandomImg();
+        gameField.setRandomPosition();
     }else if (firstStart===false){
         if (bgm!==undefined){
             bgm.then(x=>{
@@ -81,65 +88,11 @@ function endGame(result){
     clearInterval(timerId);
 }
 
-function bugOnClick(){
-    musicBug.play();
-    endGame("lose");
-    clearInterval(timerId);
-}
-
-function carrotOnClick(event){
-    const carrot = event.target;
-    const carrotLeft = document.querySelector(".carrotLeft span");
-    musicCarrot.play();
-    carrot.remove();
-    carrotText();
-    if(carrotLeft.textContent==="0"){
-        endGame("win");
-        clearInterval(timerId);
-    };
-}
 function carrotText(){
     const curCarrot = carrotLeft.textContent;
-    carrotLeft.textContent = curCarrot-1
-}
-
-function setRandomPosition(){
-    const carrotArr = document.querySelectorAll(".carrot");
-    const bugArr = document.querySelectorAll(".bug");
-    carrotArr.forEach(carrot=>randomPosition(carrot));
-    bugArr.forEach(bug=>randomPosition(bug));
-}
-
-function randomPosition(target){
-    const rect = main.getBoundingClientRect();
-    const x1 = 0;
-    const x2 = rect.width - CARROT_SIZE;
-    const y1 = 0;
-    const y2 = rect.height - CARROT_SIZE;
-    const x = Math.floor(Math.random()*(x2-x1))+x1;
-    const y = Math.floor(Math.random()*(y2-y1))+y1;
-    target.style.top = `${y}px`;
-    target.style.left = `${x}px`;  
-}
-function removeMain(){
-    if (main.childNodes[0]){
-        while(main.childNodes[0]){
-            main.childNodes[0].remove();
-        }
-    }
-}
-
-function createRandomImg(){
-    removeMain();
-    for(let i=1;i<=CARROT;i++){
-        main.innerHTML += `<img class="abs carrot" src="img/carrot.png" />`
-    }
-    for(let i=1;i<=BUG;i++){
-        main.innerHTML += `<img class="abs bug" src="img/bug.png" />`
-    }
+    carrotLeft.textContent = curCarrot-1;
 }
 
 startBtn.addEventListener("click",newGame);
 timeLeft.textContent = `00:${sec}`;
-carrotLeft.textContent = `${CARROT}`;
-main.addEventListener("click",onClickBtn);
+carrotLeft.textContent = `${gameField.carrotNum}`;

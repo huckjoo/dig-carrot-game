@@ -12,6 +12,7 @@ main {
   position: fixed;
   width: 80px;
   height: 80px;
+  position: absolute;
 }
 .bug:hover {
   cursor: pointer;
@@ -21,11 +22,9 @@ main {
   position: fixed;
   width: 100px;
   height: 100px;
+  position: absolute;
 }
 .carrot:hover {
   cursor: pointer;
   transform: scale(1.08);
-}
-.abs {
-  position: absolute;
 }
