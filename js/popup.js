@@ -13,7 +13,7 @@ export default class popUp{
     }
     retry(){
         this.retryBtn = document.querySelector(".retryBtn");
-        this.retryBtn.addEventListener("click",()=>{this.onClick()});
+        this.retryBtn.addEventListener("click",this.onClick);
     }
     text(text){
         const screen = document.createElement("div");

@@ -1,4 +1,6 @@
 'use strict';
+const musicBug = new Audio("./sound/bug_pull.mp3");
+const musicCarrot = new Audio("./sound/carrot_pull.mp3");
 
 export default class gamefield{
     constructor(CARROT,BUG,CARROT_SIZE){
@@ -7,11 +9,28 @@ export default class gamefield{
         this.carrotSize = CARROT_SIZE;
         this.main = document.querySelector("main");
         this.main.addEventListener('click',(event)=>{
-            this.onClick(event);
+            this.targetOnClick(event);
         })
+        this.carrotLeft = document.querySelector(".carrotLeft span");
+        this.carrotLeft.textContent = `${this.carrotNum}`;
     }
-    setClickListener(onClick){
-        this.onClick = onClick;
+    setEndGame(endGame){
+        this.endGame = endGame;
+    }
+    targetOnClick(event){
+        const target = event.target;
+        if(target.classList.contains("carrot")){
+            const carrotLeft = document.querySelector(".carrotLeft span");
+            musicCarrot.play();
+            target.remove();
+            this.carrotText();
+            if(carrotLeft.textContent==="0"){
+                this.endGame("win");
+            };
+        }else if(target.classList.contains('bug')){
+            musicBug.play();
+            this.endGame("lose");
+        }
     }
     createRandomImg(){
         this.removeMain();
@@ -45,5 +64,9 @@ export default class gamefield{
         const y = Math.floor(Math.random()*(y2-y1))+y1;
         target.style.top = `${y}px`;
         target.style.left = `${x}px`;  
+    }
+    carrotText(){
+        const curCarrot = this.carrotLeft.textContent;
+        this.carrotLeft.textContent = curCarrot-1;
     }
 }
