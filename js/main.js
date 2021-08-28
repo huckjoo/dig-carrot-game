@@ -1,12 +1,7 @@
 "use strict";
 import popUp from './popup.js';
 import game from './game.js';
-
-const musicBgm = new Audio("./sound/bg.mp3");
-const musicLose = new Audio("./sound/alert.wav");
-const musicWin = new Audio("./sound/game_win.mp3");
-const musicBug = new Audio("./sound/bug_pull.mp3");
-const musicCarrot = new Audio("./sound/carrot_pull.mp3");
+import * as sound from './sound.js';
 
 const finishBanner = new popUp();
 
@@ -16,12 +11,12 @@ Game.setEndGame(endGame);
 finishBanner.setEventListener(()=>{Game.newGame()});
 
 function endGame(result){
-    musicBgm.pause();
+    sound.stopBgm();
     if(result==="win"){
-        musicWin.play();
+        sound.playWin();
         finishBanner.popUpScreen("You win😄");
     }else if(result === "lose"){
-        musicLose.play();
+        sound.playLose();
         finishBanner.popUpScreen("you lose🥴");
     }else if(result === "replay"){
         finishBanner.popUpScreen("Replay❔")

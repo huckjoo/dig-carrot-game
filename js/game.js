@@ -1,6 +1,7 @@
 'use strict';
 import gamefield from "./gamefield.js";
-const musicBgm = new Audio("./sound/bg.mp3");
+import * as sound from './sound.js';
+
 export default class game{
     constructor(carrot,bug,sec){
         this.gameField = new gamefield(carrot,bug,95);
@@ -29,8 +30,7 @@ export default class game{
         }
     }
     newGame(){
-        musicBgm.currentTime = 0;
-        const bgm = musicBgm.play();
+        sound.playBgm();
         this.startBtn.classList.remove("invisible");
         if (this.firstStart === true){
             this.sec = this.firstSec;
@@ -42,11 +42,7 @@ export default class game{
             this.gameField.createRandomImg();
             this.gameField.setRandomPosition();
         }else if (this.firstStart===false){
-            if (bgm!==undefined){
-                bgm.then(x=>{
-                    this.endGame("replay");
-                })
-            }
+            this.endGame("replay");
         }
     }
     

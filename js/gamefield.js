@@ -1,6 +1,5 @@
 'use strict';
-const musicBug = new Audio("./sound/bug_pull.mp3");
-const musicCarrot = new Audio("./sound/carrot_pull.mp3");
+import * as sound from './sound.js';
 
 export default class gamefield{
     constructor(CARROT,BUG,CARROT_SIZE){
@@ -21,14 +20,14 @@ export default class gamefield{
         const target = event.target;
         if(target.classList.contains("carrot")){
             const carrotLeft = document.querySelector(".carrotLeft span");
-            musicCarrot.play();
+            sound.playCarrot();
             target.remove();
             this.carrotText();
             if(carrotLeft.textContent==="0"){
                 this.endGame("win");
             };
         }else if(target.classList.contains('bug')){
-            musicBug.play();
+            sound.playBug();
             this.endGame("lose");
         }
     }
