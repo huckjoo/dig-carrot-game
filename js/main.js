@@ -1,11 +1,17 @@
 "use strict";
 import popUp from './popup.js';
-import game from './game.js';
+import gameBuilder from './game.js';
 import * as sound from './sound.js';
 
 const finishBanner = new popUp();
 
-const Game = new game(10,10,10);
+const Game = new gameBuilder()
+.withgameDuration(5)
+.withgameCarrot(1)
+.withgameBug(33)
+.build();
+console.log('Game',Game);
+
 Game.setEndGame(endGame);
 
 finishBanner.setEventListener(()=>{Game.newGame()});

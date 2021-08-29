@@ -2,7 +2,25 @@
 import gamefield from "./gamefield.js";
 import * as sound from './sound.js';
 
-export default class game{
+export default class gameBuilder{
+    withgameDuration(duration){
+        this.duration = duration;
+        return this;
+    }
+    withgameCarrot(carrot){
+        this.carrot = carrot;
+        return this;
+    }
+    withgameBug(bug){
+        this.bug = bug;
+        return this;
+    }
+    build(){
+        return new game(this.carrot,this.bug,this.duration);
+    }
+}
+
+class game{
     constructor(carrot,bug,sec){
         this.gameField = new gamefield(carrot,bug,95);
         this.firstSec = sec;
