@@ -10,7 +10,6 @@ const Game = new gameBuilder()
 .withgameCarrot(1)
 .withgameBug(33)
 .build();
-console.log('Game',Game);
 
 Game.setEndGame(endGame);
 
